@@ -1,0 +1,5 @@
+
+/api/venv
+/api/test
+/frontend/node_modules
+/frontend/yarn.lock
