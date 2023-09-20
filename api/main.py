@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from pydeezer import Deezer
 from pydeezer.constants import track_formats
 
