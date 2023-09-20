@@ -91,13 +91,14 @@ export default function Download() {
                     className="border-2 border-gray-500 text-black rounded-md p-2" />
 
                     <button 
+                    disabled={loading}
                     onClick={handleSearch}
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         {loading ? "Searching..." : "Search"}
                     </button>
                 </div>
 
-                <Result results={results} type={type} />
+                <Result results={results} type={type} arlToken={arlToken} />
             </div>
         );
     }
