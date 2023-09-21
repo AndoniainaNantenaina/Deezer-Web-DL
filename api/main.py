@@ -1,4 +1,5 @@
-from flask import Flask, jsonify
+import os
+from flask import Flask, jsonify, send_file
 from pydeezer import Deezer
 from pydeezer.constants import track_formats
 
@@ -60,20 +61,34 @@ def get_user(arl: str):
             "data": []
         })
 
-@app.route("/<arl>/download/<id>/<path:dir>")
-def download(arl: str, id: str, dir: str):
+@app.route("/<arl>/download/<id>")
+def download(arl: str, id: str):
+    
+    dir = os.path.join(os.getcwd(), arl)
+    
+    # Verify if user folder exists
+    if os.path.exists(dir) == True:
+        # Delete user folder and all content
+        for file in os.listdir(dir):
+            os.remove(os.path.join(dir, file))
+        os.rmdir(dir)
+    
     try:
         deezer = Deezer(arl=arl)
         track = deezer.get_track(id)
-        
+                    
+        destination = os.path.join(os.getcwd(), arl, track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
+                        
         track["download"](dir, quality=track_formats.MP3_320)
+          
+        return send_file(destination, as_attachment=True)
                 
-        return jsonify({
-            "code": 200,
-            "message": "OK",
-            "user" : deezer.user,
-            "data": []
-        })
+        # return jsonify({
+        #     "code": 200,
+        #     "message": "OK",
+        #     "user" : deezer.user,
+        #     "data": destination
+        # })
     except:
         return jsonify({
             "code": 401,
