@@ -1,9 +1,13 @@
 import os
 from flask import Flask, jsonify, send_file
+from flask_cors import CORS
 from pydeezer import Deezer
 from pydeezer.constants import track_formats
 
 app = Flask(__name__)
+CORS(app, origins=[
+    "https://deezer-dl.vercel.app",
+])
 
 @app.get("/<arl>/search/<type>/<query>")
 def search(arl: str, type: str, query: str):
