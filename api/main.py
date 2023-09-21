@@ -86,7 +86,11 @@ def download(arl: str, id: str):
                         
         track["download"](dir, quality=track_formats.MP3_320)
           
-        return send_file(destination, as_attachment=True)
+        return send_file(
+            destination, 
+            as_attachment=True,
+            download_name=track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
+        )
     
     except:
         return jsonify({
