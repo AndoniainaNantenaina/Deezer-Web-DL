@@ -14,7 +14,7 @@ export default function Result(props: {type: string, results: any[], arlToken: s
         }
 
         const arl = props.arlToken;
-        await fetch(`/${arl}/download/${id}`)
+        await fetch(`https://deezer-web-dl-andoniainanantenaina.vercel.app/${arl}/download/${id}`)
         .then((res) => {
             res.blob().then((blob) => {
                 const url = window.URL.createObjectURL(new Blob([blob]));

@@ -15,7 +15,7 @@ export default function Download() {
         setLoading(true);
 
         if (arlToken.length > 0) {
-            await fetch("/" + arlToken + "/user").then((res) =>
+            await fetch("https://deezer-web-dl-andoniainanantenaina.vercel.app/" + arlToken + "/user").then((res) =>
             res.json().then((data) => {
                 if (data.code === 200) {
                     setUserInformation(data.user);
@@ -30,7 +30,7 @@ export default function Download() {
     const handleSearch = async () => {
         setLoading(true);
 
-        await fetch(`/${arlToken}/search/${type}/${query}`).then((res) => {
+        await fetch(`https://deezer-web-dl-andoniainanantenaina.vercel.app/${arlToken}/search/${type}/${query}`).then((res) => {
             res.json().then((data) => {
                 if (data.code === 200) {
                     console.log(data);
