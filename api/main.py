@@ -82,14 +82,15 @@ def download(arl: str, id: str):
         deezer = Deezer(arl=arl)
         track = deezer.get_track(id)
         
-        track["download"](os.path.join(os.getcwd(), arl), quality=track_formats.MP3_320)
+        track["download"](os.path.join("/tmp", arl), quality=track_formats.MP3_320)
           
         return send_file(
             os.path.join(
-                os.getcwd(), 
+                "/tmp", 
                 arl, 
                 track["info"]["DATA"]["SNG_TITLE"], ".mp3"
             ), 
+            download_name=track["info"]["DATA"]["SNG_TITLE"] + ".mp3",
             as_attachment=True
         )
     
