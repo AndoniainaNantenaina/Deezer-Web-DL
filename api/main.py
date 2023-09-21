@@ -7,6 +7,7 @@ from pydeezer.constants import track_formats
 app = Flask(__name__)
 CORS(app, origins=[
     "https://deezer-dl.vercel.app",
+    "http://localhost:3000",
 ])
 
 @app.get("/<arl>/search/<type>/<query>")
@@ -86,13 +87,7 @@ def download(arl: str, id: str):
         track["download"](dir, quality=track_formats.MP3_320)
           
         return send_file(destination, as_attachment=True)
-                
-        # return jsonify({
-        #     "code": 200,
-        #     "message": "OK",
-        #     "user" : deezer.user,
-        #     "data": destination
-        # })
+    
     except:
         return jsonify({
             "code": 401,

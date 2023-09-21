@@ -6,12 +6,31 @@ export default function Result(props: {type: string, results: any[], arlToken: s
     const [toDownload, setToDownload] = useState<any|null>(null);
     const [downloading, setDownloading] = useState(false);
 
-    const handleDownload = async (id: string, path: string) => {
+    const [fileData, setFileData] = useState<any|null>(null);
+
+    const downloadFile = async (id: string) => {
+
+        const arl = props.arlToken;
+
         setDownloading(true);
 
-        if (path === "") {
-            path = "C:\Deezer-Web-DL";
+        const response = await fetch(`https://deezer-web-dl-andoniainanantenaina.vercel.app/${arl}/download/${id}`);
+        const fileBlob = await response.blob();
+        setFileData(fileBlob);
+
+        if (fileBlob !== null) {
+            const url = window.URL.createObjectURL(fileBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${toDownload["title"]}.mp3`;
+            link.click();
         }
+
+        setDownloading(false);
+    }
+
+    const handleDownload = async (id: string) => {
+        setDownloading(true);
 
         const arl = props.arlToken;
         await fetch(`https://deezer-web-dl-andoniainanantenaina.vercel.app/${arl}/download/${id}`)
@@ -44,7 +63,7 @@ export default function Result(props: {type: string, results: any[], arlToken: s
                     <button 
                     disabled={downloading}
                     className="bg-blue-500 text-white p-2 rounded-lg"
-                    onClick={() => handleDownload(toDownload["id"], "")}>
+                    onClick={() => downloadFile(toDownload["id"])}>
                         {downloading ? "Downloading..." : "Download"}
                     </button>
                 </div>
