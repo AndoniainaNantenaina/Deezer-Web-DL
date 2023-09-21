@@ -14,9 +14,18 @@ export default function Result(props: {type: string, results: any[], arlToken: s
         }
 
         const arl = props.arlToken;
-        await fetch(`/${arl}/download/${id}/${path}`).then((res) => {
-            console.log(res);
-        });
+        await fetch(`/${arl}/download/${id}`)
+        .then((res) => {
+            res.blob().then((blob) => {
+                const url = window.URL.createObjectURL(new Blob([blob]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `${toDownload["title"]}.mp3`);
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode?.removeChild(link);
+            })
+        })
 
         setDownloading(false);
         setShowDownload(false);
