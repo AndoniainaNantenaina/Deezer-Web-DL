@@ -69,38 +69,34 @@ def get_user(arl: str):
 @app.route("/<arl>/download/<id>")
 def download(arl: str, id: str):
     
-    dir = os.path.join(os.getcwd(), arl)
+    # dir = os.path.join(os.getcwd(), arl)
     
-    # Verify if user folder exists
-    if os.path.exists(dir) == True:
-        # Delete user folder and all content
-        for file in os.listdir(dir):
-            os.remove(os.path.join(dir, file))
-        os.rmdir(dir)
+    # # Verify if user folder exists
+    # if os.path.exists(dir) == True:
+    #     # Delete user folder and all content
+    #     for file in os.listdir(dir):
+    #         os.remove(os.path.join(dir, file))
+    #     os.rmdir(dir)
     
     try:
         deezer = Deezer(arl=arl)
         track = deezer.get_track(id)
-                    
-        destination = os.path.join(os.getcwd(), arl, track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
-
-        track["download"](os.path.join(os.getcwd(), arl), quality=track_formats.MP3_320)
         
-        # response = make_response(send_file(destination, as_attachment=True, download_name=track["info"]["DATA"]["SNG_TITLE"] + ".mp3"))
+        track["download"](os.path.join(os.getcwd(), arl), quality=track_formats.MP3_320)
           
-        # response = send_from_directory(os.path.join(os.getcwd(), arl), track["info"]["DATA"]["SNG_TITLE"] + ".mp3", as_attachment=True)
-          
-        return jsonify({
-            "code": 200,
-            "message": "OK",
-            "user" : deezer.user,
-            "data": os.listdir(os.path.join(os.getcwd(), arl))
-        })
+        return send_file(
+            os.path.join(
+                os.getcwd(), 
+                arl, 
+                track["info"]["DATA"]["SNG_TITLE"], ".mp3"
+            ), 
+            as_attachment=True
+        )
     
     except Exception as e:
         return jsonify({
             "code": 401,
-            "message": e.args[0],
+            "message": e.__str__(),
             "user" : None,
             "data": []
         })
