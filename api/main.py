@@ -40,10 +40,10 @@ def search(arl: str, type: str, query: str):
             "user" : deezer.user,
             "data": res
         })
-    except:
+    except Exception as e:
         return jsonify({
             "code": 401,
-            "message": "Invalid ARL",
+            "message": e.args[0],
             "user" : None,
             "data": []
         })
@@ -58,10 +58,10 @@ def get_user(arl: str):
             "user" : deezer.user,
             "data": []
         })
-    except:
+    except Exception as e:
         return jsonify({
             "code": 401,
-            "message": "Invalid ARL",
+            "message": e.args[0],
             "user" : None,
             "data": []
         })
@@ -83,17 +83,24 @@ def download(arl: str, id: str):
         track = deezer.get_track(id)
                     
         destination = os.path.join(os.getcwd(), arl, track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
-                        
-        track["download"](dir, quality=track_formats.MP3_320)
+
+        track["download"](os.path.join(os.getcwd(), arl), quality=track_formats.MP3_320)
         
         # response = make_response(send_file(destination, as_attachment=True, download_name=track["info"]["DATA"]["SNG_TITLE"] + ".mp3"))
           
-        return send_from_directory(os.path.join(os.getcwd(), arl), track["info"]["DATA"]["SNG_TITLE"] + ".mp3", as_attachment=True)
+        # response = send_from_directory(os.path.join(os.getcwd(), arl), track["info"]["DATA"]["SNG_TITLE"] + ".mp3", as_attachment=True)
+          
+        return jsonify({
+            "code": 200,
+            "message": "OK",
+            "user" : deezer.user,
+            "data": os.listdir(os.path.join(os.getcwd(), arl))
+        })
     
-    except:
+    except Exception as e:
         return jsonify({
             "code": 401,
-            "message": "Invalid ARL",
+            "message": e.args[0],
             "user" : None,
             "data": []
         })
