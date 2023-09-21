@@ -69,14 +69,14 @@ def get_user(arl: str):
 @app.route("/<arl>/download/<id>")
 def download(arl: str, id: str):
     
-    # dir = os.path.join(os.getcwd(), arl)
+    dir = os.path.join("/tmp", arl)
     
-    # # Verify if user folder exists
-    # if os.path.exists(dir) == True:
-    #     # Delete user folder and all content
-    #     for file in os.listdir(dir):
-    #         os.remove(os.path.join(dir, file))
-    #     os.rmdir(dir)
+    # Verify if user folder exists
+    if os.path.exists(dir) == True:
+        # Delete user folder and all content
+        for file in os.listdir(dir):
+            os.remove(os.path.join(dir, file))
+        os.rmdir(dir)
     
     try:
         deezer = Deezer(arl=arl)
