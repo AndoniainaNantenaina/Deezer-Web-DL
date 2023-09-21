@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, send_file
+from flask import Flask, jsonify, send_file, make_response, send_from_directory
 from flask_cors import CORS
 from pydeezer import Deezer
 from pydeezer.constants import track_formats
@@ -85,12 +85,10 @@ def download(arl: str, id: str):
         destination = os.path.join(os.getcwd(), arl, track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
                         
         track["download"](dir, quality=track_formats.MP3_320)
+        
+        # response = make_response(send_file(destination, as_attachment=True, download_name=track["info"]["DATA"]["SNG_TITLE"] + ".mp3"))
           
-        return send_file(
-            destination, 
-            as_attachment=True,
-            download_name=track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
-        )
+        return send_from_directory(os.path.join(os.getcwd(), arl), track["info"]["DATA"]["SNG_TITLE"] + ".mp3", as_attachment=True)
     
     except:
         return jsonify({
