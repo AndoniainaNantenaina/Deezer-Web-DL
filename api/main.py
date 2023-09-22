@@ -102,10 +102,6 @@ def download(arl: str, id: str):
         deezer = Deezer(arl=arl)
         track = deezer.get_track(id)
         
-        # # Lazy download
-        # download = DownloadThread(arl, track)
-        # download.start()
-        # download.join()
         track["download"](os.path.join("/tmp", arl), quality=track_formats.MP3_320)
         
         return send_file(
@@ -117,73 +113,7 @@ def download(arl: str, id: str):
             download_name=track["info"]["DATA"]["SNG_TITLE"] + ".mp3",
             as_attachment=True
         )
-        
-        # return jsonify({
-        #     "code": 200,
-        #     "message": "OK",
-        #     "user" : deezer.user,
-        #     "data": [
-        #         {
-        #             "id": track["info"]["DATA"]["SNG_ID"],
-        #             "title": track["info"]["DATA"]["SNG_TITLE"],
-        #             "artist": track["info"]["DATA"]["ART_NAME"],
-        #             "album": track["info"]["DATA"]["ALB_TITLE"],
-        #             "cover": track["info"]["DATA"]["ALB_PICTURE"],
-        #             "url": "https://deezer-web-dl.vercel.app/" + arl + "/save/" + track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
-        #         }
-        #     ]
-        # })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 401,
-            "message": e.__str__(),
-            "user" : None,
-            "data": []
-        })
-
-@app.route('/list/<arl>')
-def get_saved_files(arl: str):
-    """Get all downloaded files from user folder
-    
-    Keyword arguments:
-    arl -- arl token from deezer
-    Return: Return all files from user folder
-    """
-    try:
-        files = []
-        
-        for file in os.listdir(os.path.join("/tmp", arl)):
-            files.append({
-                "name": file,
-            })
             
-        return jsonify({
-            "code": 200,
-            "message": "OK",
-            "user" : arl,
-            "data": files
-        })
-    except Exception as e:
-        return jsonify({
-            "code": 401,
-            "message": e.__str__(),
-            "user" : None,
-            "data": []
-        })
-
-@app.route('/<arl>/save/<name>')
-def save_from_server_temp(arl: str, name: str):
-    try:
-        return send_file(
-            os.path.join(
-                "/tmp", 
-                arl, 
-                name
-            ), 
-            download_name=name,
-            as_attachment=True
-        )
     except Exception as e:
         return jsonify({
             "code": 401,
