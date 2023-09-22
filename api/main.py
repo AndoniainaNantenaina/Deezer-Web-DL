@@ -102,25 +102,37 @@ def download(arl: str, id: str):
         deezer = Deezer(arl=arl)
         track = deezer.get_track(id)
         
-        # Lazy download
-        download = DownloadThread(arl, track)
-        download.start()
+        # # Lazy download
+        # download = DownloadThread(arl, track)
+        # download.start()
+        # download.join()
+        track["download"](os.path.join("/tmp", arl), quality=track_formats.MP3_320)
         
-        return jsonify({
-            "code": 200,
-            "message": "OK",
-            "user" : deezer.user,
-            "data": [
-                {
-                    "id": track["info"]["DATA"]["SNG_ID"],
-                    "title": track["info"]["DATA"]["SNG_TITLE"],
-                    "artist": track["info"]["DATA"]["ART_NAME"],
-                    "album": track["info"]["DATA"]["ALB_TITLE"],
-                    "cover": track["info"]["DATA"]["ALB_PICTURE"],
-                    "url": "https://deezer-web-dl.vercel.app/" + arl + "/save/" + track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
-                }
-            ]
-        })
+        return send_file(
+            os.path.join(
+                "/tmp", 
+                arl, 
+                track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
+            ), 
+            download_name=track["info"]["DATA"]["SNG_TITLE"] + ".mp3",
+            as_attachment=True
+        )
+        
+        # return jsonify({
+        #     "code": 200,
+        #     "message": "OK",
+        #     "user" : deezer.user,
+        #     "data": [
+        #         {
+        #             "id": track["info"]["DATA"]["SNG_ID"],
+        #             "title": track["info"]["DATA"]["SNG_TITLE"],
+        #             "artist": track["info"]["DATA"]["ART_NAME"],
+        #             "album": track["info"]["DATA"]["ALB_TITLE"],
+        #             "cover": track["info"]["DATA"]["ALB_PICTURE"],
+        #             "url": "https://deezer-web-dl.vercel.app/" + arl + "/save/" + track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
+        #         }
+        #     ]
+        # })
     
     except Exception as e:
         return jsonify({
