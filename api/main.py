@@ -4,6 +4,24 @@ from flask import Flask, jsonify, send_file, make_response, send_from_directory
 from flask_cors import CORS
 from pydeezer import Deezer
 from pydeezer.constants import track_formats
+from firebase_admin import credentials, initialize_app, storage
+
+cred = credentials.Certificate({
+    "type": "service_account",
+    "project_id": "deezer-web-dl",
+    "private_key_id": os.environ.get("PRIVATE_KEY_ID"),
+    "private_key": os.environ.get("PRIVATE_KEY").replace("\\n", "\n"),
+    "client_email": os.environ.get("CLIENT_EMAIL"),
+    "client_id": os.environ.get("CLIENT_ID"),
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": os.environ.get("CLIENT_X509_CERT_URL")
+})
+
+initialize_app(cred, {
+    'storageBucket': os.environ.get("STORAGE_BUCKET")
+})
 
 app = Flask(__name__)
 CORS(app, origins=[
@@ -178,6 +196,14 @@ class DownloadThread(threading.Thread):
                 os.remove(os.path.join("/tmp", self.arl, file))
         
         self.track["download"](os.path.join("/tmp", self.arl), quality=track_formats.MP3_320)
+        
+        track_file = os.path.join("/tmp", self.arl, self.track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
+        bucket = storage.bucket()
+        blob = bucket.blob(track_file)
+        blob.upload_from_filename(track_file)
+        
+        blob.make_public()
+        print(blob.public_url)
 
 if __name__ == "__main__":
     app.run(debug=True)

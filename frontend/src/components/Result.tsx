@@ -6,6 +6,7 @@ export default function Result(props: {type: string, results: any[], arlToken: s
     const [toDownload, setToDownload] = useState<any|null>(null);
     const [downloading, setDownloading] = useState(false);
 
+    const [urlToDownload, setUrlToDownload] = useState<string|null>(null);
     const [fileData, setFileData] = useState<any|null>(null);
 
     const downloadFile = async (id: string) => {
@@ -15,39 +16,37 @@ export default function Result(props: {type: string, results: any[], arlToken: s
         setDownloading(true);
 
         const response = await fetch(`https://deezer-web-dl-andoniainanantenaina.vercel.app/${arl}/download/${id}`);
-        const fileBlob = await response.blob();
-        setFileData(fileBlob);
 
-        if (fileBlob !== null) {
-            const url = window.URL.createObjectURL(fileBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${toDownload["title"]}.mp3`;
-            link.click();
-        }
+        setUrlToDownload(response["url"]);
 
         setDownloading(false);
+        setShowDownload(false);
     }
 
-    const handleDownload = async (id: string) => {
-        setDownloading(true);
+    const saveFile = async () => {
+        if (urlToDownload !== null) {
+            setDownloading(true);
 
-        const arl = props.arlToken;
-        await fetch(`https://deezer-web-dl-andoniainanantenaina.vercel.app/${arl}/download/${id}`)
-        .then((res) => {
-            res.blob().then((blob) => {
-                const url = window.URL.createObjectURL(new Blob([blob]));
+            await fetch(urlToDownload)
+            .then((response) => response.blob())
+            .then((blob) => {
+                setFileData(blob);
+            })
+            .then(() => {
+                const url = window.URL.createObjectURL(new Blob([fileData]));
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', `${toDownload["title"]}.mp3`);
                 document.body.appendChild(link);
                 link.click();
-                link.parentNode?.removeChild(link);
             })
-        })
+            .catch((error) => {
+                console.log(error);
+            });
 
-        setDownloading(false);
-        setShowDownload(false);
+            setDownloading(false);
+            setUrlToDownload(null);
+        }
     }
 
     if (props.type === "track") {
@@ -64,6 +63,22 @@ export default function Result(props: {type: string, results: any[], arlToken: s
                     disabled={downloading}
                     className="bg-blue-500 text-white p-2 rounded-lg"
                     onClick={() => downloadFile(toDownload["id"])}>
+                        {downloading ? "Saving..." : "Save to server"}
+                    </button>
+                </div>
+            );
+        } else if (urlToDownload !== null) {
+            return (
+                <div className="w-full bg-slate-700 text-white p-2 rounded-lg flex flex-col gap-2">
+                    <img src={toDownload["album"]["cover_medium"]} alt="Album Cover" className="w-20 h-20 rounded-xl" />
+                    <h1>Download {toDownload["title"]} by {toDownload["artist"]["name"]}</h1>
+                    <input type="text" placeholder="Where to save? '(default) C:\Deezer-Web-DL'" 
+                    readOnly={downloading}
+                    className="bg-slate-800 text-white p-2 rounded-lg" />
+                    <button 
+                    disabled={downloading}
+                    className="bg-green-500 text-white p-2 rounded-lg"
+                    onClick={() => saveFile()}>
                         {downloading ? "Downloading..." : "Download"}
                     </button>
                 </div>
