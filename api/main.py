@@ -71,7 +71,7 @@ def get_user(arl: str):
 @app.route("/<arl>/download/<id>")
 def download(arl: str, id: str):
     
-    dir = os.path.join(os.path.join(os.getcwd(), "tmp"), arl)
+    dir = os.path.join("/tmp", arl)
     
     # Verify if user folder exists
     if os.path.exists(dir) == True:
@@ -123,7 +123,7 @@ def get_saved_files(arl: str):
     try:
         files = []
         
-        for file in os.listdir(os.path.join(os.path.join(os.getcwd(), "tmp"), arl)):
+        for file in os.listdir(os.path.join("/tmp", arl)):
             files.append({
                 "name": file,
             })
@@ -147,7 +147,7 @@ def save_from_server_temp(arl: str, name: str):
     try:
         return send_file(
             os.path.join(
-                os.path.join(os.getcwd(), "tmp"), 
+                "/tmp", 
                 arl, 
                 name
             ), 
@@ -171,13 +171,13 @@ class DownloadThread(threading.Thread):
     def run(self):
         
         # Check if user folder exists
-        if os.path.exists(os.path.join(os.path.join(os.getcwd(), "tmp"), self.arl)) == True:
+        if os.path.exists(os.path.join("/tmp", self.arl)) == True:
             
             # Delete user folder and all content first 
-            for file in os.listdir(os.path.join(os.path.join(os.getcwd(), "tmp"), self.arl)):
-                os.remove(os.path.join(os.path.join(os.getcwd(), "tmp"), self.arl, file))
+            for file in os.listdir(os.path.join("/tmp", self.arl)):
+                os.remove(os.path.join("/tmp", self.arl, file))
         
-        self.track["download"](os.path.join(os.path.join(os.getcwd(), "tmp"), self.arl), quality=track_formats.MP3_320)
+        self.track["download"](os.path.join("/tmp", self.arl), quality=track_formats.MP3_320)
 
 if __name__ == "__main__":
     app.run(debug=True)
