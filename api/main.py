@@ -76,7 +76,7 @@ def get_lyrics(arl: str, id: str):
         
         lyrics_data = deezer.get_track_lyrics(id)
         
-        deezer.save_lyrics(lyrics_data, os.path.join(os.getcwd(), "tmp", arl, id))
+        deezer.save_lyrics(lyrics_data, os.path.join("/tmp", arl, id))
         
         return jsonify({
             "code": 200,
@@ -85,10 +85,10 @@ def get_lyrics(arl: str, id: str):
             "data": lyrics_data.__str__()
         })
         
-        # deezer.save_lyrics(lyrics_data, os.path.join(os.getcwd(), "tmp", arl, id))
+        # deezer.save_lyrics(lyrics_data, os.path.join("/tmp", arl, id))
         
         # return send_file(
-        #     os.path.join(os.getcwd(), "tmp", arl, id + ".lrc"), 
+        #     os.path.join("/tmp", arl, id + ".lrc"), 
         #     download_name=id + ".lrc",
         #     as_attachment=True
         # )
@@ -104,7 +104,7 @@ def get_lyrics(arl: str, id: str):
 @app.route("/<arl>/download/<id>")
 def download(arl: str, id: str):
     
-    dir = os.path.join(os.getcwd(), "tmp", arl)
+    dir = os.path.join("/tmp", arl)
     
     # Verify if user folder exists
     if os.path.exists(dir) == True:
@@ -117,7 +117,7 @@ def download(arl: str, id: str):
         deezer = Deezer(arl=arl)
         track = deezer.get_track(id)
         
-        track["download"](os.path.join(os.getcwd(), "tmp", arl), quality=track_formats.MP3_320)
+        track["download"](os.path.join("/tmp", arl), quality=track_formats.MP3_320)
         
         downloaded_track = os.path.join(
             os.getcwd(),
@@ -127,12 +127,12 @@ def download(arl: str, id: str):
         )
         
         downloaded_lyrics = os.path.join(
-            os.getcwd(), "tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".lrc"
+            "/tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".lrc"
         )
         
         if os.path.exists(downloaded_lyrics):
             
-            zip_file = os.path.join(os.getcwd(), "tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".zip")
+            zip_file = os.path.join("/tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".zip")
             
             with ZipFile(zip_file, "w") as zip:
                 with open(downloaded_lyrics, "rb") as f:
@@ -148,14 +148,14 @@ def download(arl: str, id: str):
                 zip.close()
                 
             return send_file(
-                os.path.join(os.getcwd(), "tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".zip"), 
+                os.path.join("/tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".zip"), 
                 download_name=track["info"]["DATA"]["SNG_TITLE"] + ".zip",
                 as_attachment=True
             )
         
         return send_file(
             os.path.join(
-                os.getcwd(), "tmp", 
+                "/tmp", 
                 arl, 
                 track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
             ), 
@@ -180,15 +180,15 @@ class DownloadThread(threading.Thread):
     def run(self):
         
         # Check if user folder exists
-        if os.path.exists(os.path.join(os.getcwd(), "tmp", self.arl)) == True:
+        if os.path.exists(os.path.join("/tmp", self.arl)) == True:
             
             # Delete user folder and all content first 
-            for file in os.listdir(os.path.join(os.getcwd(), "tmp", self.arl)):
-                os.remove(os.path.join(os.getcwd(), "tmp", self.arl, file))
+            for file in os.listdir(os.path.join("/tmp", self.arl)):
+                os.remove(os.path.join("/tmp", self.arl, file))
         
-        self.track["download"](os.path.join(os.getcwd(), "tmp", self.arl), quality=track_formats.MP3_320)
+        self.track["download"](os.path.join("/tmp", self.arl), quality=track_formats.MP3_320)
         
-        track_file = os.path.join(os.getcwd(), "tmp", self.arl, self.track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
+        track_file = os.path.join("/tmp", self.arl, self.track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
         bucket = storage.bucket()
         blob = bucket.blob(track_file)
         blob.upload_from_filename(track_file)
