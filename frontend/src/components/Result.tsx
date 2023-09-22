@@ -5,6 +5,17 @@ export default function Result(props: {type: string, results: any[], arlToken: s
     const [showDownload, setShowDownload] = useState(false);
     const [toDownload, setToDownload] = useState<any|null>(null);
     const [downloading, setDownloading] = useState(false);
+    const [listening, setListening] = useState(false);
+
+    const streamFile = async () => {
+        if (listening) return;
+        setListening(true);
+        let audio = new Audio(toDownload["preview"]);
+        await audio.play()
+        .then(() => {
+            setListening(false);
+        })
+    }
 
     const downloadFile = async (id: string) => {
 
@@ -15,10 +26,18 @@ export default function Result(props: {type: string, results: any[], arlToken: s
         await fetch(`https://deezer-web-dl-andoniainanantenaina.vercel.app/${arl}/download/${id}`)
         .then((res) => res.blob())
         .then((blob) => {
+            let download_file_name = ""
+
+            if (blob.type === "application/zip") {
+                download_file_name = `${toDownload["title"]}.zip`;
+            } else if (blob.type === "audio/mpeg") {
+                download_file_name = `${toDownload["title"]}.mp3`;
+            }
+
             const url = window.URL.createObjectURL(new Blob([blob]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `${toDownload["title"]}.mp3`);
+            link.setAttribute('download', download_file_name);
             document.body.appendChild(link);
             link.click();
         })
@@ -31,15 +50,45 @@ export default function Result(props: {type: string, results: any[], arlToken: s
 
         if (showDownload) {
             return(
-                <div className="w-full bg-slate-700 text-white p-2 rounded-lg flex flex-col gap-2">
-                    <img src={toDownload["album"]["cover_medium"]} alt="Album Cover" className="w-20 h-20 rounded-xl" />
-                    <h1>Download {toDownload["title"]} by {toDownload["artist"]["name"]}</h1>
+                <div className="w-full bg-slate-700 text-white p-2 rounded-lg flex flex-col gap-2 justify-center">
+                    <div className="flex flex-row gap-2">
+                        <img src={toDownload["album"]["cover_big"]} alt="Album Cover" className="w-20 h-20 rounded-xl" />
+                        <p>
+                        <h1>{toDownload["title"]}</h1>
+                        <h1>by {toDownload["artist"]["name"]}</h1>
+                        </p>
+                    </div>
                     
                     <button 
                     disabled={downloading}
-                    className="bg-blue-500 text-white p-2 rounded-lg"
+                    className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded-lg"
                     onClick={() => downloadFile(toDownload["id"])}>
-                        {downloading ? "Saving..." : "Save to server"}
+                        {downloading ? "Downloading..." : (
+                            <p className="flex flex-row gap-1 w-full justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                                <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.25 6a.75.75 0 00-1.5 0v4.94l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V9.75z" clipRule="evenodd" />
+                            </svg>                          
+                            Download
+                            </p>
+                        )}
+                    </button>
+                    
+                    <button 
+                    disabled={listening}
+                    onClick={() => streamFile()}
+                    className="bg-green-400 hover:bg-green-600 text-white p-2 rounded-lg">
+                        <p className="flex flex-row gap-1 w-full justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                            <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
+                        </svg>
+                        {listening ? "Listening..." : "Listen"}
+                        </p>
+                    </button>
+
+                    <button 
+                    className="bg-red-400 hover:bg-red-600 text-white p-2 rounded-lg"
+                    onClick={() => setShowDownload(false)}>
+                        Cancel
                     </button>
                 </div>
             );
