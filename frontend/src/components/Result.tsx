@@ -6,9 +6,6 @@ export default function Result(props: {type: string, results: any[], arlToken: s
     const [toDownload, setToDownload] = useState<any|null>(null);
     const [downloading, setDownloading] = useState(false);
 
-    const [urlToDownload, setUrlToDownload] = useState<string|null>(null);
-    const [fileData, setFileData] = useState<any|null>(null);
-
     const downloadFile = async (id: string) => {
 
         const arl = props.arlToken;
@@ -28,32 +25,6 @@ export default function Result(props: {type: string, results: any[], arlToken: s
 
         setDownloading(false);
         setShowDownload(false);
-    }
-
-    const saveFile = async () => {
-        if (urlToDownload !== null) {
-            setDownloading(true);
-
-            await fetch(urlToDownload)
-            .then((response) => response.blob())
-            .then((blob) => {
-                setFileData(blob);
-            })
-            .then(() => {
-                const url = window.URL.createObjectURL(new Blob([fileData]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', `${toDownload["title"]}.mp3`);
-                document.body.appendChild(link);
-                link.click();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-            setDownloading(false);
-            setUrlToDownload(null);
-        }
     }
 
     if (props.type === "track") {

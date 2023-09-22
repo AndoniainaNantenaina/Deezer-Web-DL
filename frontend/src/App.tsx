@@ -4,6 +4,8 @@ import Home from './pages/home';
 import Layout from './pages/layout';
 import Donate from './pages/donate';
 import About from './pages/about';
+import AuthProvider from './provider/AuthProvider';
+import AuthPage from './pages/auth';
 
 function App() {
 
@@ -17,19 +19,29 @@ function App() {
           element: <Home />
         },
         {
-          path: 'about',
-          element: <About />
+          path: 'auth',
+          element: <AuthPage />
+        },
+        {
+          path: 'download',
+          element: <Home />,
         },
         {
           path: 'donate',
           element: <Donate />
+        },
+        {
+          path: 'about',
+          element: <About />
         }
       ]
     }
   ])
 
   return (
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
 }
 
