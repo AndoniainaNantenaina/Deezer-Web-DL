@@ -1,27 +1,10 @@
 import os
 import threading
+from zipfile import ZipFile
 from flask import Flask, jsonify, send_file, make_response, send_from_directory
 from flask_cors import CORS
 from pydeezer import Deezer
 from pydeezer.constants import track_formats
-from firebase_admin import credentials, initialize_app, storage
-
-cred = credentials.Certificate({
-    "type": "service_account",
-    "project_id": "deezer-web-dl",
-    "private_key_id": os.environ.get("PRIVATE_KEY_ID"),
-    "private_key": os.environ.get("PRIVATE_KEY").replace("\\n", "\n"),
-    "client_email": os.environ.get("CLIENT_EMAIL"),
-    "client_id": os.environ.get("CLIENT_ID"),
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": os.environ.get("CLIENT_X509_CERT_URL")
-})
-
-initialize_app(cred, {
-    'storageBucket': os.environ.get("STORAGE_BUCKET")
-})
 
 app = Flask(__name__)
 CORS(app, origins=[
@@ -86,10 +69,42 @@ def get_user(arl: str):
             "data": []
         })
 
+@app.route('/<arl>/lyrics/<id>')
+def get_lyrics(arl: str, id: str):
+    try:
+        deezer = Deezer(arl)
+        
+        lyrics_data = deezer.get_track_lyrics(id)
+        
+        deezer.save_lyrics(lyrics_data, os.path.join(os.getcwd(), "tmp", arl, id))
+        
+        return jsonify({
+            "code": 200,
+            "message": "OK",
+            "user" : deezer.user,
+            "data": lyrics_data.__str__()
+        })
+        
+        # deezer.save_lyrics(lyrics_data, os.path.join(os.getcwd(), "tmp", arl, id))
+        
+        # return send_file(
+        #     os.path.join(os.getcwd(), "tmp", arl, id + ".lrc"), 
+        #     download_name=id + ".lrc",
+        #     as_attachment=True
+        # )
+        
+    except Exception as e:
+        return jsonify({
+            "code": 401,
+            "message": e.__str__(),
+            "user" : None,
+            "data": []
+        })
+
 @app.route("/<arl>/download/<id>")
 def download(arl: str, id: str):
     
-    dir = os.path.join("/tmp", arl)
+    dir = os.path.join(os.getcwd(), "tmp", arl)
     
     # Verify if user folder exists
     if os.path.exists(dir) == True:
@@ -102,11 +117,45 @@ def download(arl: str, id: str):
         deezer = Deezer(arl=arl)
         track = deezer.get_track(id)
         
-        track["download"](os.path.join("/tmp", arl), quality=track_formats.MP3_320)
+        track["download"](os.path.join(os.getcwd(), "tmp", arl), quality=track_formats.MP3_320)
+        
+        downloaded_track = os.path.join(
+            os.getcwd(),
+            "tmp",
+            arl,
+            track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
+        )
+        
+        downloaded_lyrics = os.path.join(
+            os.getcwd(), "tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".lrc"
+        )
+        
+        if os.path.exists(downloaded_lyrics):
+            
+            zip_file = os.path.join(os.getcwd(), "tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".zip")
+            
+            with ZipFile(zip_file, "w") as zip:
+                with open(downloaded_lyrics, "rb") as f:
+                    zip.writestr(track["info"]["DATA"]["SNG_TITLE"] + ".lrc", f.read())
+                    f.close()
+                
+                with open(downloaded_track, "rb") as f:
+                    zip.writestr(track["info"]["DATA"]["SNG_TITLE"] + ".mp3", f.read())
+                    f.close()
+                
+                # zip.write(downloaded_track)
+                # zip.write(downloaded_lyrics)
+                zip.close()
+                
+            return send_file(
+                os.path.join(os.getcwd(), "tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".zip"), 
+                download_name=track["info"]["DATA"]["SNG_TITLE"] + ".zip",
+                as_attachment=True
+            )
         
         return send_file(
             os.path.join(
-                "/tmp", 
+                os.getcwd(), "tmp", 
                 arl, 
                 track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
             ), 
@@ -131,15 +180,15 @@ class DownloadThread(threading.Thread):
     def run(self):
         
         # Check if user folder exists
-        if os.path.exists(os.path.join("/tmp", self.arl)) == True:
+        if os.path.exists(os.path.join(os.getcwd(), "tmp", self.arl)) == True:
             
             # Delete user folder and all content first 
-            for file in os.listdir(os.path.join("/tmp", self.arl)):
-                os.remove(os.path.join("/tmp", self.arl, file))
+            for file in os.listdir(os.path.join(os.getcwd(), "tmp", self.arl)):
+                os.remove(os.path.join(os.getcwd(), "tmp", self.arl, file))
         
-        self.track["download"](os.path.join("/tmp", self.arl), quality=track_formats.MP3_320)
+        self.track["download"](os.path.join(os.getcwd(), "tmp", self.arl), quality=track_formats.MP3_320)
         
-        track_file = os.path.join("/tmp", self.arl, self.track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
+        track_file = os.path.join(os.getcwd(), "tmp", self.arl, self.track["info"]["DATA"]["SNG_TITLE"] + ".mp3")
         bucket = storage.bucket()
         blob = bucket.blob(track_file)
         blob.upload_from_filename(track_file)
