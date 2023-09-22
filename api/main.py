@@ -120,10 +120,7 @@ def download(arl: str, id: str):
         track["download"](os.path.join("/tmp", arl), quality=track_formats.MP3_320)
         
         downloaded_track = os.path.join(
-            os.getcwd(),
-            "tmp",
-            arl,
-            track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
+            "/tmp", arl, track["info"]["DATA"]["SNG_TITLE"] + ".mp3"
         )
         
         downloaded_lyrics = os.path.join(
@@ -143,8 +140,6 @@ def download(arl: str, id: str):
                     zip.writestr(track["info"]["DATA"]["SNG_TITLE"] + ".mp3", f.read())
                     f.close()
                 
-                # zip.write(downloaded_track)
-                # zip.write(downloaded_lyrics)
                 zip.close()
                 
             return send_file(
