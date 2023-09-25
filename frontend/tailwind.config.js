@@ -6,7 +6,11 @@ module.exports = {
     "./src/components/*.tsx",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        inter: ["Inter", "sans-serif"],
+      }
+    },
   },
   plugins: [],
 }
