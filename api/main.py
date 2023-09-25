@@ -64,7 +64,7 @@ def get_user(arl: str):
     except Exception as e:
         return jsonify({
             "code": 401,
-            "message": e.args[0],
+            "message": e.__str__(),
             "user" : None,
             "data": []
         })

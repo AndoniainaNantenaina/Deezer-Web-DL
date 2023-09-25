@@ -117,6 +117,7 @@ export default function Download() {
     return(
         <div className="flex flex-row gap-2 justify-around">
             <div className='flex flex-col gap-2'>
+                <p>Download your preferred song from deezer easily.</p>
                 <input required onChange={(e) => setArlToken(e.target.value)} type="text" placeholder="ARL Token" className="border-2 border-gray-500 text-black rounded-md p-2" />
                 <button 
                 onClick={() => getUserInformation()}
