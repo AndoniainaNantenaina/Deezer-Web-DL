@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Deedl",
+  "name": "Deezer Web Music downloader.",
   "icons": [
     {
       "src": "favicon.ico",

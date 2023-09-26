@@ -16,13 +16,14 @@ export default function Download() {
     const [listening, setListening] = useState<boolean>(false);
 
     const [arlToken, setArlToken] = useState('')
-    const [userInformation, setUserInformation] = useState(null)
     const [query, setQuery] = useState('')
     const [results, setResults] = useState([])
 
     const [detail, setDetail] = useState<any|null>(null)
 
     const [type, setType] = useState("track")
+
+    const [audio, setAudio] = useState<HTMLAudioElement|null>(null)
 
     const secondToTime = (second: number) : string => {
         const hours = Math.floor(second / 3600);
@@ -33,22 +34,6 @@ export default function Download() {
         const timeString = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
 
         return timeString;
-    }
-
-    const getUserInformation = async () => {
-        setLoading(true);
-
-        if (arlToken.length > 0) {
-            await fetch(`https://deezer-dl-api.onrender.com/${arlToken}/user`).then((res) =>
-            res.json().then((data) => {
-                if (data.code === 200) {
-                    setUserInformation(data.user);
-                    console.log(data.user);
-                }
-            }));
-        }
-
-        setLoading(false);
     }
 
     const handleSearch = async () => {
@@ -111,12 +96,13 @@ export default function Download() {
     }
 
     const streamFile = async () => {
-        setListening(true)
-        
-        let audio = new Audio(detail["preview"]);
-        await audio.play()
-        
-        setListening(false)
+        let audioElement = document.getElementById('audio-element') as HTMLAudioElement | null
+
+        if (audioElement) {
+            audioElement.pause()
+            audioElement.currentTime = 0
+            audioElement.play()
+        }
     }
 
     return(
@@ -125,6 +111,8 @@ export default function Download() {
                 detail && (
                     <div className="absolute backdrop-blur-md h-screen w-screen top-0 right-0 flex flex-row items-center justify-center">
                         <div className='p-2 bg-blue-900 text-white flex flex-col rounded-3xl h-screen md:h-auto gap-2 animate__animated animate__faster animate__zoomIn'>
+
+                            <audio id='audio-element' src={detail['preview']} className='hidden' />
 
                             <img src={detail['album']['cover_big']} alt='detail-cover' className='rounded-lg' />
 
