@@ -1,12 +1,9 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import Result from './Result';
-import { AuthContext } from '../provider/AuthProvider';
 
 import 'animate.css'
 
 export default function Download() {
-
-    const context = useContext(AuthContext);
 
     const [loading, setLoading] = useState(false)
     const [arlToken, setArlToken] = useState('')
@@ -20,7 +17,7 @@ export default function Download() {
         setLoading(true);
 
         if (arlToken.length > 0) {
-            await fetch("https://deezer-web-dl-andoniainanantenaina.vercel.app/" + arlToken + "/user").then((res) =>
+            await fetch(`https://deezer-dl-api.onrender.com/${arlToken}/user`).then((res) =>
             res.json().then((data) => {
                 if (data.code === 200) {
                     setUserInformation(data.user);
@@ -35,7 +32,7 @@ export default function Download() {
     const handleSearch = async () => {
         setLoading(true);
 
-        await fetch(`https://deezer-web-dl-andoniainanantenaina.vercel.app/${arlToken}/search/${type}/${query}`).then((res) => {
+        await fetch(`https://deezer-dl-api.onrender.com/${arlToken}/search/${type}/${query}`).then((res) => {
             res.json().then((data) => {
                 if (data.code === 200) {
                     console.log(data);
