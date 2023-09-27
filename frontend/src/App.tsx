@@ -4,13 +4,14 @@ import AuthProvider from './provider/AuthProvider';
 import { Main } from './pages/main';
 import Home from './pages/home';
 import Download from './components/Download';
+import LandingPage from './pages/Landing';
 
 function App() {
 
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Main />
+      element: <LandingPage />
     },
     {
       path: '/home',

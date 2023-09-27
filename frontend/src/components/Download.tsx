@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import 'animate.css'
 
-import 'animate.css'
-
 export default function Download() {
 
     useEffect(() => {
@@ -22,8 +20,6 @@ export default function Download() {
     const [detail, setDetail] = useState<any|null>(null)
 
     const [type, setType] = useState("track")
-
-    const [audio, setAudio] = useState<HTMLAudioElement|null>(null)
 
     const secondToTime = (second: number) : string => {
         const hours = Math.floor(second / 3600);
