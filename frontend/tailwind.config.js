@@ -17,7 +17,10 @@ module.exports = {
         "purple-secondary": "#5B0888",
         "purple-gray": "#9D76C1",
         "gray-light": "#E5CFF7",
-      }
+      },
+      backgroundImage: {
+        // "landing-bg": "url('/images/landing-bg.jpg')",
+      },
     },
   },
   plugins: [],

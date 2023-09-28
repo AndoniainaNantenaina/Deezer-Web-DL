@@ -1,62 +1,42 @@
-import { useState } from "react";
-import {
-    Outlet
-} from "react-router-dom";
-import { Profile } from "../components/Profile";
-import { SideNav } from "../components/SideNav";
-import { SmNav } from "../components/SmNav";
-import 'animate.css'
+import { useState, useEffect } from 'react'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { HomeIconOutlined, HomeIconSolid, SearchIconOutlined, SearchIconSolid, UserProfileOutlined, UserProfileSolid } from '../components/Icons';
 
 export default function Layout() {
 
-    const [showMenu, setShowMenu] = useState<boolean>(false)
-    const [showProfile, setShowProfile] = useState<boolean>(false)
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (window.localStorage.getItem('user') === null) {
+            return navigate('/auth')
+        }
+    }, [])
+
+    const user = JSON.parse(window.localStorage.getItem('user') || '{}')
 
     return(
-        <div className="w-screen h-screen fixed bg-slate-800 text-white grid grid-cols-1 md:grid-cols-4">
-            <div className="hidden md:block">
-                <SideNav />
+        <div className="sm:relative h-screen bg-gradient-to-br from-black to-purple-950 text-gray-400">
+            <Outlet />
+            <div id='bottom-nav-bar' className='sm:hidden flex flex-row justify-evenly absolute bottom-0 right-0 left-0 bg-gray-800'>
+                <Link to='/dashboard' className='p-2'>
+                    <button className={`flex flex-col gap-1 items-center py-1 px-2 rounded-lg ${window.location.pathname === '/dashboard' && "text-white"}`}>
+                        {window.location.pathname === '/dashboard' ? HomeIconSolid : HomeIconOutlined}
+                        <h5 className='text-sm'>Home</h5>
+                    </button>
+                </Link>
+                <Link to='/dashboard/search'  className='p-2'>
+                    <button className={`flex flex-col gap-1 items-center py-1 px-2 rounded-lg ${window.location.pathname === '/dashboard/search' && "text-white"}`}>
+                        {window.location.pathname === '/dashboard/search' ? SearchIconSolid : SearchIconOutlined}
+                        <h5 className='text-sm'>Search</h5>
+                    </button>
+                </Link>
+                <Link to='/dashboard/profile'  className='p-2'>
+                    <button className={`flex flex-col gap-1 items-center py-1 px-2 rounded-lg ${window.location.pathname === '/dashboard/profile' && "text-white"}`}>
+                        {window.location.pathname === '/dashboard/profile' ? UserProfileSolid : UserProfileOutlined}
+                        <h5 className='text-sm'>Profile</h5>
+                    </button>
+                </Link>
             </div>
-            <div className="flex flex-col md:col-span-3 overflow-scroll">
-
-                {
-                    showMenu && (
-                        <div className="absolute w-full bg-slate-800 animate__animated animate__faster animate__fadeInLeft sm:hidden">
-                            <button className="flex flex-row p-4" onClick={() => setShowMenu(false)}>
-                                <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                            <SideNav />
-                        </div>
-                    )
-                    
-                }
-
-                {
-                    showProfile && (
-                        <div className="absolute w-full bg-slate-800 animate__animated animate__faster animate__fadeInRight sm:hidden">
-                            <button className="flex flex-row p-4" onClick={() => setShowProfile(false)}>
-                                <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                            <Profile />
-                        </div>
-                    )
-                }
-
-                <SmNav 
-                menuCallBack={() => {
-                    setShowMenu(true);
-                }}
-                profileCallBack={() => {
-                    setShowProfile(true);
-                }} />
-
-                <Outlet/>
-            </div>
-
         </div>
     );
 }

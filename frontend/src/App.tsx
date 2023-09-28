@@ -1,10 +1,9 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AuthProvider from './provider/AuthProvider';
-import { Main } from './pages/main';
-import Home from './pages/home';
-import Download from './components/Download';
 import LandingPage from './pages/Landing';
+import AuthenticationPage from './pages/Authentication';
+import Layout from './pages/layout';
 
 function App() {
 
@@ -15,19 +14,23 @@ function App() {
     },
     {
       path: '/auth',
-      element: <h1>Authentication</h1>
+      element: <AuthenticationPage />
     },
     {
       path: '/dashboard',
-      element: <Home />,
+      element: <Layout />,
       children: [
         {
-          path: 'download',
-          element: <Download />
+          path: '/dashboard/',
+          element: <h1>Dashboard</h1>
         },
         {
-          path: 'about',
-          element: <h1>About</h1>
+          path: '/dashboard/search',
+          element: <h1>Search</h1>
+        },
+        {
+          path: '/dashboard/profile',
+          element: <h1>Profile</h1>
         }
       ]
     }
