@@ -17,11 +17,20 @@ export default function Layout() {
     return(
         <div className='grid md:grid-cols-6 grid-cols-1'>
 
-            <div className='hidden md:block col-span-1 bg-gray-300 h-screen fixed'>
+            <div className='hidden h-screen md:block md:col-span-1w-full'>
+                <div className='flex flex-col gap-2 bg-gray-800 text-white h-full'>
+                    <h1>Menu</h1>
+                    <h1>Menu</h1>
+                    <h1>Menu</h1>
+                    <h1>Menu</h1>
+                    <h1>Menu</h1>
+                </div>
             </div>
             
-            <div className="h-screen overflow-auto bg-gradient-to-br from-black to-purple-950 text-gray-400 col-span-1 md:col-span-5">
+            <div className="bg-gradient-to-br from-black to-purple-950 text-gray-400 col-span-1 md:col-span-5 h-screen">
+                
                 <Outlet />
+
                 <div id='bottom-nav-bar' className='sm:hidden flex flex-row justify-evenly fixed bottom-0 right-0 left-0 bg-gray-800 font-inter'>
                     <Link to='/dashboard' className='p-2'>
                         <button className={`flex flex-col gap-1 items-center py-1 px-2 rounded-lg ${window.location.pathname === '/dashboard' && "text-white"}`}>
@@ -42,6 +51,7 @@ export default function Layout() {
                         </button>
                     </Link>
                 </div>
+
             </div>
 
         </div>

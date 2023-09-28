@@ -37,7 +37,7 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="bg-transparent w-full">
+        <div className="bg-transparent w-auto h-screen overflow-scroll">
             <div className="px-2 py-3 top-0 left-0 bg-gray-800 text-gray-300 flex flex-row w-full items-center">
                 <h2 className="text-white">Hi, <span className="font-bold">{JSON.parse(window.localStorage.getItem('user') || '{}').name}</span></h2>
             </div>
