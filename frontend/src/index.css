@@ -2,7 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* Inter font configuration */
+
 @font-face {
     font-family: 'Inter', sans-serif;
-    src: url('fonts/Inter-Regular.otf');
+    font-weight: normal;
+    src: url('fonts/Inter/Inter-Regular.otf');
+}
+
+
+/* Martian MonoSpace font configuration */
+
+@font-face {
+    font-family: 'Martian', monospace;
+    font-weight: normal;
+    src: url('fonts/MartianMono/MartianMono-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Martian', monospace;
+    font-weight: bold;
+    src: url('fonts/MartianMono/MartianMono-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Martian', monospace;
+    font-weight: lighter;
+    src: url('fonts/MartianMono/MartianMono-Light.ttf');
+}
+
+/* Roboto MonoSpace font configuration */
+
+@font-face {
+    font-family: 'Roboto', monospace;
+    font-weight: normal;
+    src: url('fonts/Roboto/RobotoMono-Regular.ttf');
 }

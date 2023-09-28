@@ -3,13 +3,13 @@ import React, {
 } from 'react';
 
 export const AuthContext = createContext({
-    userArl: "",
+    userArl: '' as string | null,
     setUserArl: (arl: string) => {}
 });
 
 export default function AuthProvider({children} : {children: React.ReactNode}) {
 
-    const [userArl, setUserArl] = useState<string>("");
+    const [userArl, setUserArl] = useState<string|null>(null);
 
     return (
         <AuthContext.Provider value={{userArl, setUserArl}}>

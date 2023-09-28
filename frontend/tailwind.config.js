@@ -9,6 +9,8 @@ module.exports = {
     extend: {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
+        martian: ["Martian", "monospace"],
+        roboto: ["Roboto", "monospace"],
       },
       colors: {
         "purple-primary": "#713ABE",

@@ -14,7 +14,11 @@ function App() {
       element: <LandingPage />
     },
     {
-      path: '/home',
+      path: '/auth',
+      element: <h1>Authentication</h1>
+    },
+    {
+      path: '/dashboard',
       element: <Home />,
       children: [
         {
