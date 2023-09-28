@@ -1,7 +1,7 @@
 export const Profile = () => {
     return (
-        <div className="flex flex-col h-full gap-2 bg-slate-700 text-white p-2">
-            <h1>User profile</h1>
+        <div className="flex flex-col h-full gap-2 bg-transparent text-white p-2">
+            
             <div className="flex flex-col items-center gap-3">
                 <img src={
                     JSON.parse(window.localStorage.getItem("user") as any)["image"]
@@ -17,6 +17,7 @@ export const Profile = () => {
                     window.location.href = "/"
                 } } className="p-2 rounded-xl bg-red-800 hover:bg-red-900 text-white">Disconnect</button>
             </div>
+            
         </div>
     )
 }

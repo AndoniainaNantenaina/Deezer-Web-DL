@@ -4,6 +4,8 @@ import AuthProvider from './provider/AuthProvider';
 import LandingPage from './pages/Landing';
 import AuthenticationPage from './pages/Authentication';
 import Layout from './pages/layout';
+import { Profile } from './components/Profile';
+import Dashboard from './pages/dashboard';
 
 function App() {
 
@@ -22,7 +24,7 @@ function App() {
       children: [
         {
           path: '/dashboard/',
-          element: <h1>Dashboard</h1>
+          element: <Dashboard />
         },
         {
           path: '/dashboard/search',
@@ -30,7 +32,7 @@ function App() {
         },
         {
           path: '/dashboard/profile',
-          element: <h1>Profile</h1>
+          element: <Profile />
         }
       ]
     }
