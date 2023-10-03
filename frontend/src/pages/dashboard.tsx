@@ -13,11 +13,18 @@ export default function Dashboard() {
     const arlToken = JSON.parse(window.localStorage.getItem('user') || '{}').arl
 
     const getMainPlaylist = async () => {
+
+        if (window.sessionStorage.getItem('mainPlaylist') !== null) {
+            setMainPlaylist(JSON.parse(window.sessionStorage.getItem('mainPlaylist') || '[]'))
+            return
+        }
+
         await fetch(`https://deezer-dl-api.onrender.com/${arlToken}/search/playlist/Happy Mood`)
         .then(res => res.json())
         .then(data => {
             console.log(data.data)
             setMainPlaylist(data.data)
+            window.sessionStorage.setItem('mainPlaylist', JSON.stringify(data.data))
         })
         .catch(err => console.log(err))
     }

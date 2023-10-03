@@ -6,6 +6,7 @@ import AuthenticationPage from './pages/Authentication';
 import Layout from './pages/layout';
 import { Profile } from './components/Profile';
 import Dashboard from './pages/dashboard';
+import Search from './components/Search';
 
 function App() {
 
@@ -28,7 +29,7 @@ function App() {
         },
         {
           path: '/dashboard/search',
-          element: <h1>Search</h1>
+          element: <Search />
         },
         {
           path: '/dashboard/profile',
