@@ -37,10 +37,14 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="bg-transparent w-auto h-screen overflow-scroll">
-            <div className="px-2 py-3 top-0 left-0 bg-gray-800 text-gray-300 flex flex-row w-full items-center">
-                <h2 className="text-white">Hi, <span className="font-bold">{JSON.parse(window.localStorage.getItem('user') || '{}').name}</span></h2>
+        <div className="bg-transparent h-screen overflow-y-auto">
+            
+            <div className="px-2 py-3 top-0 left-0 bg-gray-950 text-gray-300 flex flex-row items-center">
+                <h2 className="text-white">
+                    Hi, <span className="font-bold">{JSON.parse(window.localStorage.getItem('user') || '{}').name}</span>
+                </h2>
             </div>
+
             <div className="grid grid-cols-2 gap-2 md:gap-x-3 gap-y-5 md:first-letter:grid-cols-4 lg:grid-cols-6 p-2">
                 {
                     mainPlaylist.map((playlist, index) => (
@@ -48,16 +52,17 @@ export default function Dashboard() {
                     ))
                 }
             </div>
+            
         </div>
     );
 }
 
 const TrackCard = (props: {playlist: any}) => {
     return (
-        <div className="flex flex-col gap-2 p-2 bg-blue-800 text-white rounded-lg">
+        <div className="flex flex-col gap-2 p-2 text-white rounded-lg">
             <img src={props.playlist.picture_medium} alt="Cover" className="rounded-lg" />
             <h1 className="font-bold font-inter">{props.playlist.title}</h1>
-            <h1 className="font-roboto">{props.playlist.user.name}</h1>
+            <h1 className="text-xs">{props.playlist.user.name}</h1>
         </div>
     );
 }

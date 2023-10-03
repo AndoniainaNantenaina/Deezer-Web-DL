@@ -18,16 +18,33 @@ export default function Layout() {
         <div className='grid md:grid-cols-6 grid-cols-1'>
 
             <div className='hidden h-screen md:block md:col-span-1w-full'>
-                <div className='flex flex-col gap-2 bg-gray-800 text-white h-full'>
-                    <h1>Menu</h1>
-                    <h1>Menu</h1>
-                    <h1>Menu</h1>
-                    <h1>Menu</h1>
-                    <h1>Menu</h1>
+                <div className='flex flex-col gap-2 bg-gray-950 text-white h-full'>
+                    <h1 className='text-lg font-roboto font-bold'>DEEDL</h1>
+
+                    <Link to='/dashboard' className={`${window.location.pathname === '/dashboard' ? 'bg-gray-800' : 'bg-gray-900 text-gray-400 hover:bg-gray-800'} p-2 rounded-lg mx-1 text-sm`}>
+                        <h1 className='flex flex-row gap-1 items-center'>
+                            <span>{HomeIconSolid}</span>
+                            Dashboard
+                        </h1>
+                    </Link>
+
+                    <Link to='/dashboard/search' className={`${window.location.pathname === '/dashboard/search' ? 'bg-gray-800' : 'bg-gray-900 text-gray-400 hover:bg-gray-800'} p-2 rounded-lg mx-1 text-sm`}>
+                        <button className='flex flex-row gap-1 items-center'>
+                            <span>{SearchIconOutlined}</span>
+                            Search
+                        </button>
+                    </Link>
+
+                    <Link to='/dashboard/profile' className={`${window.location.pathname === '/dashboard/profile' ? 'bg-gray-800' : 'bg-gray-900 text-gray-400 hover:bg-gray-800'} p-2 rounded-lg mx-1 text-sm`}>
+                        <h1 className='flex flex-row gap-1 items-center'>
+                            <span>{UserProfileOutlined}</span>
+                            Profile
+                        </h1>
+                    </Link>
                 </div>
             </div>
             
-            <div className="bg-gradient-to-br from-black to-purple-950 text-gray-400 col-span-1 md:col-span-5 h-screen">
+            <div className="bg-black text-gray-400 col-span-1 md:col-span-5">
                 
                 <Outlet />
 
