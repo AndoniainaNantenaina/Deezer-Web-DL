@@ -34,6 +34,10 @@ function App() {
         {
           path: '/dashboard/profile',
           element: <Profile />
+        },
+        {
+          path: '/dashboard/:type/:id',
+          element: <h1>Detail</h1>
         }
       ]
     }
