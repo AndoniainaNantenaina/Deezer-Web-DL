@@ -53,19 +53,19 @@ export default function Search() {
                 </button>
             </span>
 
-            <div className="flex flex-row gap-2 font-inter text-sm p-2">
+            <div className="flex flex-row gap-2 font-inter text-sm p-1 bg-slate-200 m-2 rounded-xl justify-center">
                 <button
                 onClick={() => setQueryType('track')} 
-                className={`${queryType === 'track' && 'font-bold text-white'}`}>Tracks</button>
+                className={`p-1 rounded-lg ${queryType === 'track' ? 'font-bold text-white bg-black' : ''}`}>Tracks</button>
                 <button
                 onClick={() => setQueryType('album')} 
-                className={`${queryType === 'album' && 'font-bold text-white'}`}>Albums</button>
+                className={`p-1 rounded-lg ${queryType === 'album' ? 'font-bold text-white bg-black' : ''}`}>Albums</button>
                 <button
                 onClick={() => setQueryType('artist')} 
-                className={`${queryType === 'artist' && 'font-bold text-white'}`}>Artists</button>
+                className={`p-1 rounded-lg ${queryType === 'artist' ? 'font-bold text-white bg-black' : ''}`}>Artists</button>
                 <button
                 onClick={() => setQueryType('playlist')} 
-                className={`${queryType === 'playlist' && 'font-bold text-white'}`}>Playlists</button>
+                className={`p-1 rounded-lg ${queryType === 'playlist' ? 'font-bold text-white bg-black' : ''}`}>Playlists</button>
             </div>
 
             <Result result={res} loading={loading} type={queryType} />
@@ -106,9 +106,9 @@ const Result = (props: {result: any[], loading: boolean, type: string}) => {
                     props.result.map((res) => (
                         <Link to={`/dashboard/track/${res.id}`}>
                             <div className="flex flex-col gap-2 p-2 text-white rounded-lg">
-                                <img src={res.album.cover_medium} alt="Cover" className="rounded-lg md:transition-transform md:hover:scale-105" />
+                                <img src={res.album.cover_medium} alt="Cover" className="rounded-lg md:transition-transform md:hover:scale-105 md:hover:cursor-zoom-in" />
                                 <h1 className="font-bold font-inter">{res.title}</h1>
-                                <h1 className="text-xs">{res.artist.name}</h1>
+                                <h1 className="text-xs text-gray-400 font-inter">{res.artist.name}</h1>
                             </div>
                         </Link>
                     ))

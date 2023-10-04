@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import WrapText from "../components/WrapText";
 
 export default function Dashboard() {
 
@@ -51,6 +52,11 @@ export default function Dashboard() {
                 </h2>
             </div>
 
+            <div className="p-2 text-white flex flex-col border-b-2 border-gray-700">
+                <h1 className="text-xl font-bold">Made for you</h1>
+                <h5 className="text-gray-400 font-inter">Mood Playlists to enjoy your day !</h5>
+            </div>
+
             <div className="grid grid-cols-2 gap-2 md:gap-x-3 gap-y-5 md:first-letter:grid-cols-4 lg:grid-cols-6 p-2">
                 {
                     mainPlaylist.map((playlist, index) => (
@@ -67,8 +73,10 @@ const TrackCard = (props: {playlist: any}) => {
     return (
         <div className="flex flex-col gap-2 p-2 text-white rounded-lg">
             <img src={props.playlist.picture_medium} alt="Cover" className="rounded-lg" />
-            <h1 className="font-bold font-inter">{props.playlist.title}</h1>
-            <h1 className="text-xs">{props.playlist.user.name}</h1>
+            <h1 className="font-bold font-inter">
+                <WrapText text={props.playlist.title} limit={20} />
+            </h1>
+            <h1 className="text-xs font-inter text-gray-400">{props.playlist.user.name}</h1>
         </div>
     );
 }
