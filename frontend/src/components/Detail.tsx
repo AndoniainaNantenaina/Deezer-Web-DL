@@ -34,43 +34,59 @@ export default function Detail() {
     
     if (loading) {
         return (
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col h-screen justify-center items-center">
                 <h1>Loading data...</h1>
             </div>
         );
     }
 
-    if (params.type === 'track') {
-        return (
-            <div>
-                <h1>Track n° {params.id}</h1>
-                {/* <h1>{detailData['info']['DATA']['SNG_TITLE']}</h1> */}
-            </div>
-        );
-    }
+    if (detailData !== null) {
+        if (params.type === 'track') {
+            return (
+                <div className="p-2 h-screen md:h-auto">
+                    <img 
+                    className="rounded-lg"
+                    key={detailData["ALB_TITLE"]} 
+                    src={`https://api.deezer.com/album/${detailData['ALB_ID']}/image`} 
+                    alt="cover" />
+                    
+                    <h1 className="text-white font-bold text-2xl md:text-3xl lg:text-4xl">{detailData['SNG_TITLE']}</h1>
+                    <h1>In {detailData['ALB_TITLE']}</h1>
+                    <h1 className="text-white md:text-xl">
+                    {
+                        (detailData['ARTISTS'] as any[]).map(
+                            artist => artist['ART_NAME'] + ' '
+                        )
+                    }
+                    </h1>
+                </div>
+            );
+        }
 
-    else if (params.type === 'album') {
-        return (
-            <div>
-            </div>
-        );
-    }
+        else if (params.type === 'album') {
+            return (
+                <div>
+                </div>
+            );
+        }
 
-    else if (params.type === 'playlist') {
-        return (
-            <div>
-            </div>
-        );
-    }
+        else if (params.type === 'playlist') {
+            return (
+                <div>
+                </div>
+            );
+        }
 
-    else if (params.type === 'artist') {
-        return (
-            <div>
-            </div>
-        );
+        else if (params.type === 'artist') {
+            return (
+                <div>
+                </div>
+            );
+        }
     }
     
     return (
+        
         <div className="flex flex-col items-center justify-center">
             <h1>404 Not Found.</h1>
         </div>
