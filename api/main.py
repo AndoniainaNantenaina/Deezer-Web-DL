@@ -13,6 +13,40 @@ CORS(app, origins=[
     "http://localhost:3000",
 ])
 
+@app.get("/<arl>/<type>/<id>")
+def getDetailById(arl: str, type: str, id: str):
+    
+    try:
+        res = None
+        deezer = Deezer(arl=arl)
+        
+        if type == "track":
+            res = deezer.get_track(id)
+            
+        elif type == "album":
+            res = deezer.get_album(id)
+            
+        elif type == "artist":
+            res = deezer.get_artist(id)
+            
+        else:
+            raise Exception("Invalid type")
+        
+        return jsonify({
+            "code": 200,
+            "message": "OK",
+            "user" : deezer.user,
+            "data": res.__str__()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "code": 401,
+            "message": e.__str__(),
+            "user" : None,
+            "data": []
+        })
+
 @app.get("/<arl>/search/<type>/<query>")
 def search(arl: str, type: str, query: str):
     

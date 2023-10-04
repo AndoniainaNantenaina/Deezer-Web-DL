@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { SearchIconSolid } from "./Icons";
 import 'animate.css'
+import { Link } from "react-router-dom";
 
 export default function Search() {
 
@@ -105,11 +106,13 @@ const Result = (props: {result: any[], loading: boolean, type: string}) => {
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {
                     props.result.map((res) => (
-                        <div className="flex flex-col gap-2 p-2 text-white rounded-lg">
-                            <img src={res.album.cover_medium} alt="Cover" className="rounded-lg" />
-                            <h1 className="font-bold font-inter">{res.title}</h1>
-                            <h1 className="text-xs">{res.artist.name}</h1>
-                        </div>
+                        <Link to={`/dashboard/track/${res.id}`}>
+                            <div className="flex flex-col gap-2 p-2 text-white rounded-lg">
+                                <img src={res.album.cover_medium} alt="Cover" className="rounded-lg md:transition-transform md:hover:scale-105" />
+                                <h1 className="font-bold font-inter">{res.title}</h1>
+                                <h1 className="text-xs">{res.artist.name}</h1>
+                            </div>
+                        </Link>
                     ))
                 }
             </div>

@@ -7,6 +7,7 @@ import Layout from './pages/layout';
 import { Profile } from './components/Profile';
 import Dashboard from './pages/dashboard';
 import Search from './components/Search';
+import Detail from './components/Detail';
 
 function App() {
 
@@ -37,7 +38,7 @@ function App() {
         },
         {
           path: '/dashboard/:type/:id',
-          element: <h1>Detail</h1>
+          element: <Detail />
         }
       ]
     }

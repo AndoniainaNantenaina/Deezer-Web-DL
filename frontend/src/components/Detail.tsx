@@ -7,6 +7,7 @@ export default function Detail() {
     if (params.type === 'track') {
         return (
             <div>
+                <h1>Track n° {params.id}</h1>
             </div>
         );
     }
