@@ -6,7 +6,6 @@ export default function Download() {
     useEffect(() => {
         if (window.localStorage.getItem("user") && arlToken.length === 0) {
             setArlToken(JSON.parse(window.localStorage.getItem("user") as any)["arl"])
-            console.log("User logged In !")
         }
     }, [])
 
@@ -42,8 +41,6 @@ export default function Download() {
                 setResults(data.data);
             }
         })
-
-        console.log(results);
 
         setLoading(false);
     }

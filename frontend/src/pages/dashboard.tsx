@@ -22,7 +22,6 @@ export default function Dashboard() {
         await fetch(`https://deezer-dl-api.onrender.com/${arlToken}/search/playlist/Happy Mood`)
         .then(res => res.json())
         .then(data => {
-            console.log(data.data)
             setMainPlaylist(data.data)
             window.sessionStorage.setItem('mainPlaylist', JSON.stringify(data.data))
         })

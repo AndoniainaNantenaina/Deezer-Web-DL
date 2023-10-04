@@ -20,7 +20,6 @@ export default function Detail() {
         await fetch(`https://deezer-dl-api.onrender.com/${arl}/${params.type}/${params.id}`)
         .then((res) => res.json())
         .then((data) => {
-            console.log(data.data);
             setDetailData(data.data);
             setLoading(false);
         })

@@ -8,7 +8,6 @@ export default function Search() {
     useEffect(() => {
         if (window.localStorage.getItem("user") && arlToken.length === 0) {
             setArlToken(JSON.parse(window.localStorage.getItem("user") as any)["arl"])
-            console.log("User logged In !")
         }
     }, [])
 
@@ -25,7 +24,6 @@ export default function Search() {
         await fetch(`https://deezer-dl-api.onrender.com/${arlToken}/search/${queryType}/${query}`)
         .then((res) => res.json())
         .then((data) => {
-            console.log("RESULT : ", data.data)
             if (data.code === 200) {
                 setRes(data.data);
             }
