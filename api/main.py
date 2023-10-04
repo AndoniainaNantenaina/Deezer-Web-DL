@@ -36,7 +36,7 @@ def getDetailById(arl: str, type: str, id: str):
             "code": 200,
             "message": "OK",
             "user" : deezer.user,
-            "data": res.__str__()
+            "data": res["info"]["DATA"]
         })
         
     except Exception as e:
