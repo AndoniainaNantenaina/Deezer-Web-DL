@@ -15,6 +15,14 @@ CORS(app, origins=[
 
 @app.get("/<arl>/<type>/<id>")
 def getDetailById(arl: str, type: str, id: str):
+    """Fonction qui prend les details à l'aide d'un type de données et son ID.
+    
+    Keyword arguments:
+    arl -- Le chaine de caractère contenant le token ARL de l'utilisateur depuis Deezer.
+    type -- Le type de données à rechercher.
+    id -- L'ID du données laquelle prendre les détails.
+    Return: JSON -> Les résultats de recherche ou vide avec message d'erreur.
+    """
     
     try:
         res = None
@@ -49,6 +57,14 @@ def getDetailById(arl: str, type: str, id: str):
 
 @app.get("/<arl>/search/<type>/<query>")
 def search(arl: str, type: str, query: str):
+    """Fonction qui fait une recherche par rapport à un type de données (Musique, Album, Artist, Playlist).
+    
+    Keyword arguments:
+    arl -- Le chaine de caractère contenant le token ARL de l'utilisateur depuis Deezer.
+    type -- Le type de données à rechercher.
+    query -- La requête à faire.
+    Return: JSON -> Les résultats de recherche ou vide avec message d'erreur.
+    """
     
     try:
         deezer = Deezer(arl=arl)
@@ -87,6 +103,13 @@ def search(arl: str, type: str, query: str):
         
 @app.route("/<arl>/user")
 def get_user(arl: str):
+    """Fonction pour prendre les informations de l'utilisateur à partir du token ARL depuis Deezer.
+    
+    Keyword arguments:
+    arl -- Le chaine de caractère contenant le token ARL.
+    Return: JSON -> avec les informations de l'utilisateur dans 'data' ou avec l'erreur.
+    """
+    
     try:
         deezer = Deezer(arl=arl)
         return jsonify({
@@ -137,6 +160,12 @@ def get_lyrics(arl: str, id: str):
 
 @app.route("/<arl>/download/<id>")
 def download(arl: str, id: str):
+    """Fontion de téléchargement.
+    
+    Keyword arguments:
+    arl -- Un string qui spécifie le token ARL de l'utilisateur depuis Deezer.
+    Return: Le fichier blob ou un JSON avec l'erreur.
+    """
     
     dir = os.path.join("/tmp", arl)
     
@@ -201,12 +230,20 @@ def download(arl: str, id: str):
         })
 
 class DownloadThread(threading.Thread):
+    
     def __init__(self, arl: str, track: dict[str, any]):
         self.arl = arl
         self.track = track
         super(DownloadThread, self).__init__()
         
     def run(self):
+        """Fonction de lancement du thread de téléchargement de fichier sans prendre trop de temps à renvoyer la réponse de l'API
+        Utilisé dans le cas ou il faut télécharger un fichier de grande taille alors que le temps de réponse devrait être minimum possible.
+        
+        Keyword arguments:
+        self -- The object
+        Return: None
+        """
         
         # Check if user folder exists
         if os.path.exists(os.path.join("/tmp", self.arl)) == True:

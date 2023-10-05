@@ -9,6 +9,12 @@ export default function Search() {
         if (window.localStorage.getItem("user") && arlToken.length === 0) {
             setArlToken(JSON.parse(window.localStorage.getItem("user") as any)["arl"])
         }
+
+        if (window.sessionStorage.getItem("search") && res.length === 0) {
+            const data = JSON.parse(window.sessionStorage.getItem("search") as any);
+
+            setRes(data);
+        }
     }, [])
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -21,13 +27,33 @@ export default function Search() {
     const handleSearch = async () => {
         setLoading(true);
 
-        await fetch(`https://deezer-dl-api.onrender.com/${arlToken}/search/${queryType}/${query}`)
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.code === 200) {
-                setRes(data.data);
-            }
-        })
+        // Vérifier si la recherche est déjà en cache
+        if (res.length === 0) {
+            setRes([]);
+        }
+
+        else {
+            await fetch(`https://deezer-dl-api.onrender.com/${arlToken}/search/${queryType}/${query}`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.code === 200) {
+                    setRes(data.data);
+
+                    // Vider le cache de recherche et le remplacer par le nouveau
+                    window.sessionStorage.removeItem("search");
+                    window.sessionStorage.setItem("search", JSON.stringify(data.data));
+                }
+            })
+        }
+
+        setLoading(false);
+    }
+
+    const handleChangeType = async (type: string) => {
+        setLoading(true);
+
+        setQueryType(type);
+        await handleSearch();
 
         setLoading(false);
     }
@@ -53,19 +79,23 @@ export default function Search() {
                 </button>
             </span>
 
-            <div className="flex flex-row gap-2 font-inter text-sm p-1 bg-slate-200 m-2 rounded-xl justify-center">
+            <div className="flex flex-row gap-2 font-inter text-sm p-1 bg-purple-950 m-2 rounded-xl justify-center">
                 <button
-                onClick={() => setQueryType('track')} 
-                className={`p-1 rounded-lg ${queryType === 'track' ? 'font-bold text-white bg-black' : ''}`}>Tracks</button>
+                disabled={query.length === 0}
+                onClick={() => handleChangeType('track')} 
+                className={`p-1 rounded-lg ${queryType === 'track' ? 'text-white bg-black disabled:text-gray-500 disabled:bg-gray-800' : ''}`}>Tracks</button>
                 <button
-                onClick={() => setQueryType('album')} 
-                className={`p-1 rounded-lg ${queryType === 'album' ? 'font-bold text-white bg-black' : ''}`}>Albums</button>
+                disabled={query.length === 0}
+                onClick={() => handleChangeType('album')} 
+                className={`p-1 rounded-lg ${queryType === 'album' ? 'text-white bg-black disabled:text-gray-500 disabled:bg-gray-800' : ''}`}>Albums</button>
                 <button
-                onClick={() => setQueryType('artist')} 
-                className={`p-1 rounded-lg ${queryType === 'artist' ? 'font-bold text-white bg-black' : ''}`}>Artists</button>
+                disabled={query.length === 0}
+                onClick={() => handleChangeType('artist')} 
+                className={`p-1 rounded-lg ${queryType === 'artist' ? 'text-white bg-black disabled:text-gray-500 disabled:bg-gray-800' : ''}`}>Artists</button>
                 <button
-                onClick={() => setQueryType('playlist')} 
-                className={`p-1 rounded-lg ${queryType === 'playlist' ? 'font-bold text-white bg-black' : ''}`}>Playlists</button>
+                disabled={query.length === 0}
+                onClick={() => handleChangeType('playlist')} 
+                className={`p-1 rounded-lg ${queryType === 'playlist' ? 'text-white bg-black disabled:text-gray-500 disabled:bg-gray-800' : ''}`}>Playlists</button>
             </div>
 
             <Result result={res} loading={loading} type={queryType} />
@@ -107,6 +137,24 @@ const Result = (props: {result: any[], loading: boolean, type: string}) => {
                         <Link to={`/dashboard/track/${res.id}`}>
                             <div className="flex flex-col gap-2 p-2 text-white rounded-lg">
                                 <img src={res.album.cover_medium} alt="Cover" className="rounded-lg md:transition-transform md:hover:scale-105 md:hover:cursor-zoom-in" />
+                                <h1 className="font-bold font-inter">{res.title}</h1>
+                                <h1 className="text-xs text-gray-400 font-inter">{res.artist.name}</h1>
+                            </div>
+                        </Link>
+                    ))
+                }
+            </div>
+        );
+    }
+    
+    else if (props.type === 'album') {
+        return (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {
+                    props.result.map((res) => (
+                        <Link to={`/dashboard/album/${res.id}`}>
+                            <div className="flex flex-col gap-2 p-2 text-white rounded-lg">
+                                <img src={res.cover} alt="Cover" className="rounded-lg md:transition-transform md:hover:scale-105 md:hover:cursor-zoom-in" />
                                 <h1 className="font-bold font-inter">{res.title}</h1>
                                 <h1 className="text-xs text-gray-400 font-inter">{res.artist.name}</h1>
                             </div>
