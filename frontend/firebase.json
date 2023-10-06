@@ -1,6 +1,6 @@
 {
     "hosting": {
-      "site": "deedl-web",
+      "site": "deedl-web-dl",
       "public": "build",
       "ignore": [
         "firebase.json",

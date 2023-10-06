@@ -3,11 +3,10 @@ import 'animate.css'
 
 export default function Result(props: {type: string, results: any[], arlToken: string}) {
 
-    const [showDownload, setShowDownload] = useState(false);
-    const [toDownload, setToDownload] = useState<any|null>(null);
-    const [downloading, setDownloading] = useState(false);
-    
-    const [listening, setListening] = useState(false);
+    const [showDownload, setShowDownload]   = useState(false);
+    const [toDownload, setToDownload]       = useState<any|null>(null);
+    const [downloading, setDownloading]     = useState(false);
+    const [listening, setListening]         = useState(false);
 
     const streamFile = async () => {
         
